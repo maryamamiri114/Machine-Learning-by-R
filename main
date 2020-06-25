@@ -1,0 +1,32 @@
+install.packages(c("party","tidyverse","modelr","broom"))
+install.packages("caret")
+library(party)
+library(tidyverse)
+library(modelr)
+library(broom)
+library(caret)
+
+data = read.csv("cleveland.csv")
+View(data)
+
+set.seed(123)
+myIndex <- sample(1:nrow(data), 0.8*nrow(data))
+
+trainData <- data[myIndex, ]
+View(trainData)
+
+testData <- data[-myIndex, ]
+View(testData)
+
+formula = num ~.
+
+myModel <- lm(formula, trainData)
+myModel
+
+pred <- predict(myModel, newdata = testData, type="response")
+View(pred)
+
+data.frame(
+  R2 = R2(pred, testData$num),
+  RMSE = RMSE(pred, testData$num),
+  MAE = MAE(pred, testData$num))
